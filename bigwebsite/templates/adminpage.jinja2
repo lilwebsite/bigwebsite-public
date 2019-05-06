@@ -1,0 +1,26 @@
+{% extends "adminpage_base.jinja2" %}
+
+{% block adminpage %}
+{% if page is page_controller %}
+{{ super()|safe }}
+{% else %}
+<html>
+<head>
+	<title>login</title>
+</head>
+<body>
+<div style="margin: 0 auto; width: 10em; height: 10em;">
+	<p>enter credentials</p>
+	<br>
+	<form action="" method="post">
+		<label for="login">username</label>
+		<input type="text" name="login">
+		<label for="password">password</label>
+		<input type="password" name="password">
+		<button type="submit" name="form-submit" value="login">login</button>
+	</form>
+</div>
+</body>
+</html>
+{% endif %}
+{% endblock %}

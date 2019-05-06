@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<noscript>
+		<style>
+			html {display: none;}
+		</style>
+		<meta http-equiv="refresh" content="0.0;url=noscript/videos">
+	</noscript>
+	<meta charset="utf8">
+	<title>bigwebsite</title>
+	<link rel=icon href="/content/favicon.ico" type="image/x-icon" />
+	<link href="art/content/stylesheet.css" rel="stylesheet">
+</head>
+<body>
+{%- if loneimage == False -%}
+<div id="imgcontainer">
+	{%- for item in arthtml -%}
+	{% if item.type is pdf %}
+	<div class="pdfobj" pdfobj="{{- item.pdfobj|safe -}}">{{- item.main|safe -}}</div>
+	{% endif %}
+	{% if item.type is img %}
+	<div class="container" fullrez="{{- item.uri|safe -}}">{{- item.thumbnail|safe -}}</div>
+	{% endif %}
+	{%- endfor -%}
+</div>
+{%- else -%}
+<div id="lonecontainer"><img id="loneimage" src="{{- arthtml|safe -}}"></div>
+{%- endif -%}
+<div id="credit">
+	<div id=top><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png" /></a><div id="showhide">[+] show license</div></div><div id="txthide" class="license"><br />The art<span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/StillImage" rel="dct:type">work</span> on this website by <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Dylan Bohorquez</span> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a>.<br />Permissions beyond the scope of this license may be available at <a xmlns:cc="http://creativecommons.org/ns#" href="https://{{- hostname|safe -}}/contact" rel="cc:morePermissions">https://{{- hostname|safe -}}/contact</a>.</div>
+</div>
+{%- if loneimage == False -%}
+<div id="dimcontainer" class="dim-nonvis"></div>
+<img id="highrez" class="highrez-nonvis" src="">
+{%- endif -%}
+<a id="backlink" href="/"><img id="backbutton" src="/content/backbutton.png"></a>
+</body>
+{%- if loneimage == False -%}
+<script src="/scripts/artpage.js"></script>
+{%- endif -%}
+<script src="/scripts/license.js"></script>
+</html>

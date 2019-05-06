@@ -1,0 +1,13 @@
+{% block artlist %}
+	<p>remove art</p>
+	{% for art in arthtml %}
+		{% if art.type is pdf %}
+		<br><form class="artdelete" action="" method="post"><button type="submit" name="art-submit" value="{{ art.delete|safe }}">delete art pdf {{ art.num|safe }}</button></form>
+{{ art.main|safe }}
+		{% endif %}
+		{% if art.type is img %}
+		<br><form class="artdelete" action="" method="post"><button type="submit" name="art-submit" value="{{ art.delete|safe }}">delete art {{ art.num|safe }}</button></form>
+{{ art.thumbnail|safe }}
+		{% endif %}
+	{% endfor %}
+{% endblock %}

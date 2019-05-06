@@ -1,0 +1,13 @@
+#use this file to launch bigwebsite on startup with systemd
+[Unit]
+Description=run bigwebsite
+After=syslog.target network.target remote-fs.target nss-lookup.target 50-wired.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/.bigwebsite.sh
+ExecStop=/bin/kill -s QUIT $MAINPID
+PrivateTemp=true
+
+[Install]
+WantedBy=multi-user.target

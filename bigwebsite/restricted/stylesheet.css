@@ -1,0 +1,115 @@
+html,body{
+	margin: 0;
+	padding: 0;
+	background-color: black;
+	color: white;
+	font-size: 1.2em;
+}
+
+p{
+	margin: 0 auto;
+}
+
+input,label,button{
+	display: inline-block;
+}
+
+#banner{
+	margin: auto 0;
+	max-width: 40%;
+	vertical-align: middle;
+	text-align: center;
+}
+
+#addvideo, #addart{
+	position: relative;
+}
+
+#addvideo input, #addart input{
+	margin-bottom: 1em;
+}
+
+#addvideo input:first-of-type, #addart input:first-of-type{
+	width: 16em;
+}
+
+#artdelete img{
+	height: 30%;
+}
+
+#formytadd{
+	display: inline-block;
+	width: 15em;
+}
+
+#videocontainer,#artcontainer,#settingscontainer,#topcontainer{
+	width: 100%;
+	text-align: center;
+	padding-top: 1em;
+}
+
+.infobubble{
+	width: 21.5em;
+}
+
+.info{
+	cursor: pointer;
+	max-height: 20px;
+	display: inline-block;
+}
+
+iframe,.ytcontainer div{
+	position: relative;
+	z-index: 0 !important;
+	cursor: auto;
+	height: 9vw;
+	width: 16vw;
+	max-width: 112vh;
+	max-height: 63vh;
+}
+
+object{
+	position: relative;
+	z-index: 0 !important;
+}
+
+.tab{
+	margin: 0 .1em;
+	padding: .2em .5em;
+	display: inline-block;
+	background-color: #3D3D3D;
+	cursor: pointer;
+}
+
+.border{
+	z-index: 99 !important;
+	cursor: auto;
+	height: 9.1vw;
+	width: 16.3vw;
+	position: absolute;
+	pointer-events: none;
+}
+
+@supports (display: grid){
+	p{
+		width: auto;
+	}
+
+	.container{
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: 100vh;
+		grid-gap: 0px 0px;
+	}
+
+	.big:first-of-type{
+		height: auto;
+	}
+
+	.big{
+		display: grid;
+		grid-gap: 0;
+		grid-column: 1 / 1;
+		grid-row: 1 / 1;
+		justify-items: center;
+	}
+}

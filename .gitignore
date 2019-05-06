@@ -1,0 +1,9 @@
+*.log
+*.pyc
+bigwebsite.egg-info/
+bigwebsite/restricted/sjcl.js
+bigwebsite/root/art/content/art
+.cached
+default.data.sqlite
+clean.sh
+data.sqlite

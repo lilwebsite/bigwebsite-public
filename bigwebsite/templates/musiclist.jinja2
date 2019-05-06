@@ -1,0 +1,5 @@
+{% block musiclist %}
+	{% for embed in embeds %}
+	{{- embed|safe -}}
+	{% endfor %}
+{% endblock %}

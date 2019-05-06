@@ -1,0 +1,168 @@
+html,body{
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  cursor: url("/content/cursor.gif"), auto;
+}
+
+img{
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+body{
+  position: fixed;
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 100%;
+  max-height: 100%;
+}
+
+#container{
+  position: relative;
+  display: block;
+  max-width: 95%;
+  width: 90vh;
+  margin: 0 auto;
+  max-height: 100%;
+}
+
+#enterinfo{
+  position: relative;
+  display: block;
+  margin: 0 auto;
+  max-width: 95%;
+  height: 35vh;
+}
+
+#enterinfo img{
+  max-width: 100%;
+  position: absolute;
+  bottom: 0;
+  margin: 0 auto;
+}
+
+#doorbell{
+  height: 45vh;
+  margin: 10vh auto 0 auto;
+  cursor: url("/content/selectcursor.gif"), auto;
+}
+
+#caret-container{
+  z-index: 99 !important;
+  height: 9vw;
+  max-height: 23%;
+  position: absolute;
+  display: block;
+  width: 100%;
+  bottom: 0 !important;;
+}
+
+#caret-container #caret{
+  cursor: inherit;
+  height: 100%;
+  margin: 0;
+  justify-items: initial;
+  width: initial;
+  max-width: none;
+  left: 18%;
+  position: relative;
+  display: inline-block;
+}
+
+@supports (display: grid){
+  #container{
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 100vh;
+    grid-gap: 0px 0px;
+  }
+  
+  img{
+    display: grid;
+    grid-gap: 0;
+    grid-column: 1 / 1;
+    grid-row: 1 / 1;
+  }
+}
+
+#backbutton{
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 20vh;
+	max-width: 22%;
+	cursor: url("/content/selectcursor.gif"), auto;
+}
+
+#caret-container .alphabet{
+  background: url('/contact/content/alphabet.png');
+  font-size: 1.48vh;
+  margin-bottom: 1.5em;
+  left: 17%;
+  width: 3em;
+  height: 4em;
+  max-height: 4em;
+  background-repeat: repeat;
+  background-size: calc(3em * 7) calc(4em * 6);
+  background-position: left calc(-3em * 1) top calc(-4em * 0);
+  outline: none;
+  border-style: none;
+  border-width: 0px;
+  background-color: transparent;
+  position: relative;
+  display: inline-block;
+  bottom: 0;
+}
+
+textarea:focus, input:focus{
+    outline: none;
+}
+
+#enterinfo #caret-container #a{background-position: left calc(-3em * 0) top calc(-4em * 0);}
+#enterinfo #caret-container #b{background-position: left calc(-3em * 1) top calc(-4em * 0);}
+#enterinfo #caret-container #c{background-position: left calc(-3em * 2) top calc(-4em * 0);}
+#enterinfo #caret-container #d{background-position: left calc(-3em * 3) top calc(-4em * 0);}
+#enterinfo #caret-container #e{background-position: left calc(-3em * 4) top calc(-4em * 0);}
+#enterinfo #caret-container #f{background-position: left calc(-3em * 5) top calc(-4em * 0);}
+#enterinfo #caret-container #g{background-position: left calc(-3em * 6) top calc(-4em * 0);}
+#enterinfo #caret-container #h{background-position: left calc(-3em * 0) top calc(-4em * 1);}
+#enterinfo #caret-container #i{background-position: left calc(-3em * 1) top calc(-4em * 1);}
+#enterinfo #caret-container #j{background-position: left calc(-3em * 2) top calc(-4em * 1);}
+#enterinfo #caret-container #k{background-position: left calc(-3em * 3) top calc(-4em * 1);}
+#enterinfo #caret-container #l{background-position: left calc(-3em * 4) top calc(-4em * 1);}
+#enterinfo #caret-container #m{background-position: left calc(-3em * 5) top calc(-4em * 1);}
+#enterinfo #caret-container #n{background-position: left calc(-3em * 6) top calc(-4em * 1);}
+#enterinfo #caret-container #o{background-position: left calc(-3em * 0) top calc(-4em * 2);}
+#enterinfo #caret-container #p{background-position: left calc(-3em * 1) top calc(-4em * 2);}
+#enterinfo #caret-container #q{background-position: left calc(-3em * 2) top calc(-4em * 2);}
+#enterinfo #caret-container #r{background-position: left calc(-3em * 3) top calc(-4em * 2);}
+#enterinfo #caret-container #s{background-position: left calc(-3em * 4) top calc(-4em * 2);}
+#enterinfo #caret-container #t{background-position: left calc(-3em * 5) top calc(-4em * 2);}
+#enterinfo #caret-container #u{background-position: left calc(-3em * 6) top calc(-4em * 2);}
+#enterinfo #caret-container #v{background-position: left calc(-3em * 0) top calc(-4em * 3);}
+#enterinfo #caret-container #w{background-position: left calc(-3em * 1) top calc(-4em * 3);}
+#enterinfo #caret-container #x{background-position: left calc(-3em * 2) top calc(-4em * 3);}
+#enterinfo #caret-container #y{background-position: left calc(-3em * 3) top calc(-4em * 3);}
+#enterinfo #caret-container #z{background-position: left calc(-3em * 4) top calc(-4em * 3);}
+#enterinfo #caret-container #at{background-position: left calc(-3em * 5) top calc(-4em * 3);}
+#enterinfo #caret-container #dot{background-position: left calc(-3em * 6) top calc(-4em * 3);}
+#enterinfo #caret-container #dash{background-position: left calc(-3em * 0) top calc(-4em * 4);}
+#enterinfo #caret-container #zero{background-position: left calc(-3em * 1) top calc(-4em * 4);}
+#enterinfo #caret-container #one{background-position: left calc(-3em * 2) top calc(-4em * 4);}
+#enterinfo #caret-container #two{background-position: left calc(-3em * 3) top calc(-4em * 4);}
+#enterinfo #caret-container #three{background-position: left calc(-3em * 4) top calc(-4em * 4);}
+#enterinfo #caret-container #four{background-position: left calc(-3em * 5) top calc(-4em * 4);}
+#enterinfo #caret-container #five{background-position: left calc(-3em * 6) top calc(-4em * 4);}
+#enterinfo #caret-container #six{background-position: left calc(-3em * 0) top calc(-4em * 5);}
+#enterinfo #caret-container #seven{background-position: left calc(-3em * 1) top calc(-4em * 5);}
+#enterinfo #caret-container #eight{background-position: left calc(-3em * 2) top calc(-4em * 5);}
+#enterinfo #caret-container #nine{background-position: left calc(-3em * 3) top calc(-4em * 5);}

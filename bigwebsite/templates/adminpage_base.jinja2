@@ -1,0 +1,91 @@
+{% block adminpage %}
+<html>
+<head>
+	<title>admin page</title>
+	<link href="restricted/stylesheet.css" rel="stylesheet">
+	<link rel=icon href="/content/favicon.ico" type="image/x-icon" />
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+	<meta http-equiv="Pragma" content="no-cache"/>
+	<meta http-equiv="Expires" content="0"/>
+</head>
+<body>
+<div id="topcontainer">
+	<img id="banner" src="restricted/adminbanner.png"></img>
+	<div id="tabcontainer">
+		<div id="arttab" class="tab" contentid="artcontainer">ART</div><div id="videostab" class="tab" contentid="videocontainer">VIDEOS</div><div id="settingstab" class="tab" contentid="settingscontainer">SETTINGS</div>
+	</div>
+</div>
+<div id="settingscontainer" style="display:none">
+	<h1>site settings</h1>
+	<br>
+	<form id="settingsform" action="" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+		<a id="checksort-bubble" class="infobubble" target="_blank" title="This setting is used as a fix for when the images on the art page fail and are out of order or missing. This button will shut the site down for around 30 seconds, depending on how many images there are. It finds all the files that are currently being stored on the server, then reorders them based on a database containing the upload times/dates. If the button says that 'image validation failed' it means that the amount of images it was going to supply to the client did not match the amount of files on the server." href="#" style="display:none" onclick="return false;"></a>
+		<img id="info-checksort" class="info" src="restricted/info.png"></img>
+		<p style="display:inline-block">check order of art page images</p>
+		{% if unsorted is check_sort %}
+		<p style="color:red">image validation failed. please sort.</p>
+		{% else %}
+		<p style="color:green">images are sorted, everything is OK.</p>
+		{% endif %}
+		<button type="submit" name="checksort-submit" value="checksort">check</button>
+	</form>
+</div>
+<div id="videocontainer" style="display:none">
+	<div id="addvideo">
+		<h1>add video</h1>
+		<br>
+		<div id="videoadd-result"></div>
+		<form id="formytadd" action="" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+			<p>add a youtube link</p>
+			<input type="text" name="url" placeholder="paste youtube url">
+			<label for="thumbnail">add border image (png only)</label>
+			<input type="file" name="thumbnail" value="">
+			<button type="submit" name="video-submit" value="videourl">submit</button>
+		</form>
+		<br>
+		<!--<p>or add a video file</p>
+		<form id="formfileadd" action="" method="post">
+		<label for="url">paste youtube url</label>
+		<input type="text" name="url">
+		<label for="thumbnail">add thumbnail image</label>
+		<input type="file" name="thumbnail">
+		<button type="submit" name="video-submit" value="videofile">submit</button>
+		</form>-->
+		<div id="videodel-result"></div>
+	</div>
+	<div id="removevideo">
+		<p>remove video</p>
+		{% for video in videohtml %}
+		<br>
+		<form class="videodelete" action="" method="post">
+			<button type="submit" name="video-submit" value="videodel{{ video.num|safe }}">delete video {{ video.num|safe }}</button>
+		</form>
+		<div class="ytcontainer">{{ video.html|safe }}</div>
+		{% endfor %}
+	</div>
+</div>
+<div id="artcontainer" style="display:none">
+	<div id="addart">
+		<h1>add art</h1>
+		<br>
+		<p>add an art file (jpg/jpeg, png, gif, bmp, webp)</p>
+		<div id="artadd-result"></div>
+		<form id="formartadd" action="" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+			<label for="art">add art image</label>
+			<input type="file" name="art" value="">
+			<button type="submit" name="art-submit" value="artimg">submit</button>
+		</form>
+	</div>
+	<div id="removeart">
+		<div id="artdel-result"></div>
+		<div id="artdelete">
+			{% include "artlist.jinja2" %}
+		</div>
+	</div>
+</div>
+</body>
+<script type="text/javascript" src="restricted/jquery-3.3.1.js"></script>
+<script type="text/javascript" src="videos/content/videoload.js"></script>
+<script type="text/javascript" src="restricted/adminpage.js"></script>
+</html>
+{% endblock %}

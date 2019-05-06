@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<noscript>
+		<style>
+			html {display: none;}
+		</style>
+		<meta http-equiv="refresh" content="0.0;url=noscript/videos">
+	</noscript>
+	<meta charset="utf8">
+	<title>bigwebsite</title>
+	<link rel=icon href="/content/favicon.ico" type="image/x-icon" />
+	<link href="videos/content/stylesheet.css" rel="stylesheet">
+</head>
+<body>
+	{% for item in videohtml %}
+	<div class="container">
+{{ item|safe }}
+	</div>
+	{% endfor %}
+	<a href="/"><img id="backbutton" src="/content/backbutton.png"></a>
+</body>
+<script type="text/javascript" src="videos/content/videoload.js"></script>
+</html>

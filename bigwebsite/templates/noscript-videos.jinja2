@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf8">
+	<title>bigwebsite</title>
+	<link href="videos/content/stylesheet.css" rel="stylesheet">
+	<link rel=icon href="/content/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+	{% for item in videos %}
+	<div class="container">
+		{{ item|safe }}
+	</div>
+	{% endfor %}
+</body>
+</html>

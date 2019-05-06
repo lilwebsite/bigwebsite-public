@@ -1,0 +1,66 @@
+html,body{
+  margin: 0;
+  padding: 0;
+  -webkit-padding: 0;
+  cursor: url("/content/cursor.gif"), auto;
+}
+
+body{
+  padding-top: 10%;
+}
+
+iframe,.container div,.explode{
+  position: relative;
+  z-index: 0 !important;
+  cursor: auto;
+  height: 46vw;
+  width: 80vw;
+  max-width: 112vh;
+  max-height: 63vh;
+}
+
+object{
+  position: relative;
+  z-index: 0 !important;
+}
+
+.border{
+  z-index: 99 !important;
+  cursor: auto;
+  height: 46.1vw;
+  width: 80.3vw;
+  max-width: 112.3vh;
+  max-height: 63.1vh;
+  position: absolute;
+  pointer-events: none;
+}
+
+
+.container{
+  width: 100%;
+  text-align: center;
+  padding-top: 1em;
+  -webkit-padding-top: 1em;
+}
+
+@supports (display: grid){
+  p{
+    width: auto;
+  }
+  
+  .container{
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 100vh;
+    grid-gap: 0px 0px;
+  }
+}
+
+#backbutton{
+	z-index: 100;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 20vh;
+	max-width: 22%;
+	cursor: url("/content/selectcursor.gif"), auto;
+}

@@ -1,0 +1,5 @@
+	<p>remove video</p>
+	{% for video in videohtml %}
+		<br><form class="formdelete" action="" method="post"><button type="submit" name="video-submit" value="videodel{{ video.num|safe }}">delete video {{ video.num|safe }}</button></form>
+{{ video.html|safe }}
+	{% endfor %}

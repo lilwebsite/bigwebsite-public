@@ -1,0 +1,15 @@
+#this is an example systemd file for nginx
+[Unit]
+Description=nginx webserver
+After=syslog.target network.target remove-fs.target nss-lookup.target 50-wired.target
+
+[Service]
+Type=forking
+ExecStartPre=/usr/sbin/nginx -t
+ExecStart=/usr/sbin/nginx
+ExecStop=/bin/kill -s QUIT $MAINPID
+ExecReload=/bin/kill -s HUP $MAINPID
+PrivateTemp=true
+
+[Install]
+WantedBy=multi-user.target
