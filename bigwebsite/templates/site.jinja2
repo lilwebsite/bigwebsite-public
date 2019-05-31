@@ -14,27 +14,24 @@
 	<link rel=icon href="/content/favicon.ico" type="image/x-icon" />
 	<link href="content/stylesheet.css" rel="stylesheet">
 	<link href="content/button/button.css" rel="stylesheet">
-	{% if button == 1 %}<script src="content/button/button.js" type="text/javascript"></script>{% endif %}
-	{% if button == 1 %}<script src="content/jquery-3.3.1.min.js" type="text/javascript"></script>{% endif %}
 </head>
 <body>
 	<img id="{% if button == 1 %}signinbutton{% else %}signinbroken{% endif %}" src="{% if button == 1 %}content/button/signin.png{% else %}content/button/signinbroken.png{% endif %}">
 	<div id="dimcontainer" class="superhide"></div>
 	<div id="container">
-		<object class="big" id="bigwebsite-svg" type="image/svg+xml" data="content/bigwebsite-path.svg">
-			Your browser does not support SVG. go to {{ hostname|safe -}}/noscript for a compatible site
-		</object>
+		<img class="big" id="bigwebsite" draggable="false" src="content/bigwebsite.png">
 		<div id="resultcontainer">
 			<img id="signedin" class="superhide" name="signedin" src="content/button/signedin.png"><img id="signedout" class="superhide" name="signedout" src="content/button/signedout.png">
 		</div>
-		<object class="big" id="art-svg" type="image/svg+xml" data="content/art-path.svg"></object>
-		<object class="big" id="music-svg" type="image/svg+xml" data="content/music-path.svg"></object>
-		<object class="big" id="videos-svg" type="image/svg+xml" data="content/videos-path.svg"></object>
-		<object class="big" id="contact-svg" type="image/svg+xml" data="content/contact-path.svg"></object>
-		<object class="big" id="about-svg" type="image/svg+xml" data="content/about-path.svg"></object>
+		<a class="big" id="art" href="/art"><img src="content/art.png"></a>
+		<a class="big" id="music" href="/music"><img src="content/music.png"></a>
+		<a class="big" id="videos" href="/videos"><img src="content/videos.png"></a>
+		<a class="big" id="contact" href="/contact"><img src="content/contact.png"></a>
+		<a class="big" id="about" href="/about"><img src="content/about.png"></a>
 	</div>
 </body>
-<script src="content/site.js" type="text/javascript"></script>
+{% if button == 1 %}<script src="scripts/button.js" type="text/javascript"></script>{% endif %}
+{% if button == 1 %}<script src="scripts/jquery.js" type="text/javascript"></script>{% endif %}
 <img src="content/button/signout.png" style="display:none;">
 <img src="content/button/signinbroken.png" style="display:none;">
 </html>

@@ -1,97 +1,117 @@
 html,body{
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  cursor: url("/content/cursor.gif"), auto;
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	cursor: url("/content/cursor.gif"), auto;
+	background-color: #fcfefb;
 }
 
 img{
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -webkit-user-drag: none;
-  -khtml-user-drag: none;
-  -moz-user-drag: none;
-  -o-user-drag: none;
-  user-drag: none;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	-webkit-user-drag: none;
+	-khtml-user-drag: none;
+	-moz-user-drag: none;
+	-o-user-drag: none;
+	user-drag: none;
 }
 
 body{
-  position: fixed;
-  min-width: 100%;
-  max-width: 100%;
-  min-height: 100%;
-  max-height: 100%;
+	position: fixed;
+	min-width: 100%;
+	max-width: 100%;
+	min-height: 100%;
+	max-height: 100%;
 }
 
 #container{
-  position: relative;
-  display: block;
-  max-width: 95%;
-  width: 90vh;
-  margin: 0 auto;
-  max-height: 100%;
+	position: relative;
+	display: block;
+	max-width: 95%;
+	width: 90vh;
+	margin: 0 auto;
+	max-height: 100%;
 }
 
 #enterinfo{
-  position: relative;
-  display: block;
-  margin: 0 auto;
-  max-width: 95%;
-  height: 35vh;
+	position: relative;
+	display: block;
+	margin: 0 auto;
+	max-width: 95%;
+	height: 35vh;
 }
 
 #enterinfo img{
-  max-width: 100%;
-  position: absolute;
-  bottom: 0;
-  margin: 0 auto;
+	max-width: 100%;
+	position: absolute;
+	bottom: 0;
+	margin: 0 auto;
+}
+
+#prompt{
+	pointer-events: none;
+	z-index: -10;
+	height: 100%;
+	width: 60%;
+	left: 50%;
+	transform: translate(-50%, 0%);
 }
 
 #doorbell{
-  height: 45vh;
-  margin: 10vh auto 0 auto;
-  cursor: url("/content/selectcursor.gif"), auto;
+	height: 45vh;
+	margin: 10vh auto 0 auto;
+	cursor: url("/content/selectcursor.gif"), auto;
+}
+
+@media (orientation: portrait){
+	#doorbell{
+		margin: 0 auto 0 auto;
+	}
+
+	#enterinfo{
+		top: -5vh;
+	}
 }
 
 #caret-container{
-  z-index: 99 !important;
-  height: 9vw;
-  max-height: 23%;
-  position: absolute;
-  display: block;
-  width: 100%;
-  bottom: 0 !important;;
+	z-index: 99 !important;
+	height: 9vw;
+	max-height: 23%;
+	position: absolute;
+	display: block;
+	width: 100%;
+	bottom: 0 !important;;
 }
 
 #caret-container #caret{
-  cursor: inherit;
-  height: 100%;
-  margin: 0;
-  justify-items: initial;
-  width: initial;
-  max-width: none;
-  left: 18%;
-  position: relative;
-  display: inline-block;
+	cursor: inherit;
+	height: 100%;
+	margin: 0;
+	justify-items: initial;
+	width: initial;
+	max-width: none;
+	left: 18%;
+	position: relative;
+	display: inline-block;
 }
 
 @supports (display: grid){
-  #container{
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 100vh;
-    grid-gap: 0px 0px;
-  }
-  
-  img{
-    display: grid;
-    grid-gap: 0;
-    grid-column: 1 / 1;
-    grid-row: 1 / 1;
-  }
+	#container{
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: 100vh;
+		grid-gap: 0px 0px;
+	}
+	
+	img{
+		display: grid;
+		grid-gap: 0;
+		grid-column: 1 / 1;
+		grid-row: 1 / 1;
+	}
 }
 
 #backbutton{
@@ -104,27 +124,27 @@ body{
 }
 
 #caret-container .alphabet{
-  background: url('/contact/content/alphabet.png');
-  font-size: 1.48vh;
-  margin-bottom: 1.5em;
-  left: 17%;
-  width: 3em;
-  height: 4em;
-  max-height: 4em;
-  background-repeat: repeat;
-  background-size: calc(3em * 7) calc(4em * 6);
-  background-position: left calc(-3em * 1) top calc(-4em * 0);
-  outline: none;
-  border-style: none;
-  border-width: 0px;
-  background-color: transparent;
-  position: relative;
-  display: inline-block;
-  bottom: 0;
+	background: url('/contact/content/alphabet.png');
+	font-size: 1.48vh;
+	margin-bottom: 1.5em;
+	left: 17%;
+	width: 3em;
+	height: 4em;
+	max-height: 4em;
+	background-repeat: repeat;
+	background-size: calc(3em * 7) calc(4em * 6);
+	background-position: left calc(-3em * 1) top calc(-4em * 0);
+	outline: none;
+	border-style: none;
+	border-width: 0px;
+	background-color: transparent;
+	position: relative;
+	display: inline-block;
+	bottom: 0;
 }
 
 textarea:focus, input:focus{
-    outline: none;
+		outline: none;
 }
 
 #enterinfo #caret-container #a{background-position: left calc(-3em * 0) top calc(-4em * 0);}

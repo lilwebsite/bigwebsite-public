@@ -75,14 +75,14 @@ def solve_compression(image=None, size_limit=None, min_limit=None, max_limit=Non
 
 class imgcompress:
 	#if successful all functions return None
-	def __init__(self, image, limit_size=0.1, limit_min=(600, 600), limit_max=(900, 900)):
+	def __init__(self, image, limit_size=0.3, limit_min=(600, 600), limit_max=(1200, 1200)):
 		#limits are ratio independent, ex. (if W == 900 or H == 1000) True, (if W == 2000 or H == 1200) False
 		self.limit_size = limit_size #max file size
 		self.limit_max = limit_max #max height / width
 		self.limit_min = limit_min #min height / width
 		self.image = image #load an image object (specifically defined by bigwebsite/data/image)
 
-	def compress(self, compression = 3, thumbnail = False, savetype = 'JPEG', mode='RGB', saveas=None):
+	def compress(self, compression = 2, thumbnail = False, savetype = 'JPEG', mode='RGB', saveas=None):
 		if not self.activefile:
 			return None
 		self.activefile.load()

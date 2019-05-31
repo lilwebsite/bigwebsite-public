@@ -17,3 +17,5 @@ from sqlalchemy import (
 	update,
 	Table
 )
+
+from bigwebsite.data.switch import switch as sw

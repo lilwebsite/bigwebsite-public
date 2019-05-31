@@ -180,14 +180,25 @@ keypress.deletetimeout = function() {
 //keypress.keystr variable
 keypress.genstr = function(remove = false) {
 	str = '';
+	parse_special = function(str){
+		switch (str) {
+			case 'at':
+				return '@';
+			case 'dot':
+				return '.';
+			case 'dash':
+				return '-';
+		}
+		return str;
+	}
 	if (remove === false) {
 		for (x = 0; x < keypress.keys.length; x++) {
-			str += keypress.keys[x];
+			str += parse_special(keypress.keys[x]);
 		}
 		return str;
 	} else {
 		for (x = 0; x < keypress.keys.length - 1; x++) {
-			str += keypress.keys[x];
+			str += parse_special(keypress.keys[x]);
 		}
 		return str;
 	}

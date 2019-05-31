@@ -14,6 +14,8 @@ from .meta import (
 
 from .elements.status import response_status
 
+from pyramid.renderers import JSON
+
 resp_status = response_status()
 
 def forbidden(request, status=403):
@@ -52,6 +54,8 @@ def main(global_config, test_settings=None, **settings):
 			max_age=900,
 			serializer=JSONSerializer()
 		)
+
+	config.add_renderer('json', JSON(indent=4))
 
 	config.set_session_factory(session_factory)
 	config.add_forbidden_view(forbidden)

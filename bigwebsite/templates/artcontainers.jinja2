@@ -1,0 +1,10 @@
+{% block artcontainers %}
+{%- for item in arthtml -%}
+{% if item.type is pdf %}
+<div class="pdfobj artobj" pdfobj="{{- item.pdfobj|safe -}}"></div>
+{% endif %}
+{% if item.type is img %}
+<div class="container artobj" fullrez="{{- item.uri|safe -}}"></div>
+{% endif %}
+{%- endfor -%}
+{% endblock %}

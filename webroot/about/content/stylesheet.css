@@ -3,6 +3,7 @@ html,body{
 	padding: 0;
 	font-size: 6vh;
 	cursor: url("/content/cursor.gif"), auto;
+	background-color: #fcfefb;
 }
 
 body{

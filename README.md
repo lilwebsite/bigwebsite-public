@@ -18,7 +18,7 @@ Backend server for https://bigwebsite.cool/ written in python.
 
 		./installserver.sh [remove-after] [qskip]
 
-		remove-after - removes the cloned directory after install (git can still be used in the install directory)
+		remove-after - removes the cloned directory after install (git can still used the installed directory)
 
 		qskip - skips all questions
 

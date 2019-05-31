@@ -9,20 +9,13 @@
 	</noscript>
 	<meta charset="utf8">
 	<title>bigwebsite</title>
-	<link rel=icon href="/content/favicon.ico" type="image/x-icon" />
+	<link rel=icon href="content/favicon.ico" type="image/x-icon" />
 	<link href="art/content/stylesheet.css" rel="stylesheet">
 </head>
 <body>
 {%- if loneimage == False -%}
 <div id="imgcontainer">
-	{%- for item in arthtml -%}
-	{% if item.type is pdf %}
-	<div class="pdfobj" pdfobj="{{- item.pdfobj|safe -}}">{{- item.main|safe -}}</div>
-	{% endif %}
-	{% if item.type is img %}
-	<div class="container" fullrez="{{- item.uri|safe -}}">{{- item.thumbnail|safe -}}</div>
-	{% endif %}
-	{%- endfor -%}
+{% include "artcontainers.jinja2" %}
 </div>
 {%- else -%}
 <div id="lonecontainer"><img id="loneimage" src="{{- arthtml|safe -}}"></div>
@@ -33,11 +26,14 @@
 {%- if loneimage == False -%}
 <div id="dimcontainer" class="dim-nonvis"></div>
 <img id="highrez" class="highrez-nonvis" src="">
+<img id="back" class="control-novis" src="art/content/back.png">
+<img id="next" class="control-novis" src="art/content/next.png">
 {%- endif -%}
-<a id="backlink" href="/"><img id="backbutton" src="/content/backbutton.png"></a>
+<a id="backlink" href="/"><img id="backbutton" src="content/backbutton.png"></a>
 </body>
+<script src="scripts/jquery.js"></script>
 {%- if loneimage == False -%}
-<script src="/scripts/artpage.js"></script>
+<script src="scripts/artpage.js"></script>
 {%- endif -%}
-<script src="/scripts/license.js"></script>
+<script src="scripts/license.js"></script>
 </html>

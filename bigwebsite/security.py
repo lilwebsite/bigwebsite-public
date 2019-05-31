@@ -72,7 +72,7 @@ class user_security:
 		return HTTPFound(location=self.adminpage, headers=forget(self.request))
 
 	def login(self):
-		status = 200
+		status = 403
 		if 'form-submit' in self.request.params:
 			login = self.request.params['login']
 			password = self.request.params['password']

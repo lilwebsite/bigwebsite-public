@@ -1,5 +1,5 @@
 from bigwebsite.include.art import *
-import pdb
+from bigwebsite.include.debug import *
 
 class art_elements:
 	def __init__(self, art, settings):
@@ -25,48 +25,37 @@ class art_elements:
 		if self.art is None: #if there are no images, return None
 			return [None]
 		elements = []
-		img_tag = self.element.set_imgclass('art')
-		pdf_tag = self.element.set_imgclass('pdf')
+		img_tag = self.element.set_img_class('art')
+		pdf_tag = self.element.set_img_class('pdf')
+		pdfobj_num = 0
 		num = 0
-		for x in self.art:
-			element_type = None
+		for artobj in self.art:
 			num += 1
-			if type(x) != i:
-				
-				pdfobj = x
-				if pdfobj[0] is not None:
-					element_type = 'pdf'
-					uri = self.write_pdf_uri(pdfobj_num=pdfobj[1], img_name='thumbnail')
-				else:
-					continue;
-			else:
-				element_type = 'img'
-				uri = self.write_img_uri('{uri}{filename}.{ext}', x)
-				thumb_uri = self.write_img_uri('{uri}{filename}-thumbnail.{ext}', x)
-			if element_type:
-				current = {'type': element_type}
-				if element_type == 'img' and uri is not None and thumb_uri is not None:
-					temp = {
-						'main': img_tag.format(uri=uri),
-						'thumbnail': img_tag.format(uri=thumb_uri),
-						'uri': uri,
-						'thumb_uri': thumb_uri,
-						'num': num,
-						'delete': 'artdel{num}'.format(num=x.file.number)
-					}
-				elif element_type == 'pdf' and uri is not None and pdfobj is not None:
-					temp = {
-						'main': pdf_tag.format(uri=uri),
-						'uri': uri,
-						'num': num,
-						'delete': 'pdfobj_del{num}'.format(num=pdfobj[1]),
-						'pdfobj': '{num};{amount}'.format(num=pdfobj[1], amount=pdfobj[1])
-					}
-				if temp:
-					for key,val in temp.items():
-						current[key] = val
-			if current:
-				elements.append(current)
+			current = {'type': artobj.type}
+			if type(artobj) is i:
+				uri = self.write_img_uri('{uri}{filename}.{ext}', artobj)
+				thumb_uri = self.write_img_uri('{uri}{filename}-thumbnail.{ext}', artobj)
+				info = {
+					'main': img_tag.format(uri=uri),
+					'thumbnail': img_tag.format(uri=thumb_uri),
+					'uri': uri,
+					'thumb_uri': thumb_uri,
+					'num': num,
+					'delete': 'artdel{num}'.format(num=artobj.file.number)
+				}
+			if type(artobj) is p:
+				pdfnum = int(re.search(r'pdfobj(\d+)', artobj.pdfobj.name).group(1))
+				uri = self.write_pdf_uri(pdfobj_num=pdfnum, img_name='thumbnail')
+				info = {
+					'main': pdf_tag.format(uri=uri),
+					'uri': uri,
+					'num': num,
+					'delete': 'pdfobj_del{num}'.format(num=pdfnum),
+					'pdfobj': '{num};{amount}'.format(num=pdfnum, amount=len(artobj.pdfobj.images))
+				}
+			for key,val in info.items():
+				current[key] = val
+			elements.append(current)
 		return elements
 
 class art_functions:
@@ -121,116 +110,49 @@ class art_functions:
 	def get_objects(self, artpath):
 		art = unordered = []
 		epochtimes = {}
-		pdf_dirs = {}
 		dbinfo = self.request.dbsession.query(Art).all()
 
-		#combine outputs
-		output_image = self.ls_artpath().split('\n') #separate each file in the directory
-		output_pdf = self.ls_artpath(child_dir='pdf/').split('\n')
-		outputs = (output_image, output_pdf)
-		output = []
-		for folder in outputs:
-			try:
-				if re.search(r'total 0', folder[0]) is not None:
-					continue;
-			except IndexError:
-				pass
-			for fileinfo in range(1, len(folder)-1):
-				output.append(folder[fileinfo])
-		if not output: #if theres nothing in the directories return None
-			return [None]
+		for artobj in dbinfo:
+			time = artobj.uploadtime
+			epoch = self.time2epoch([
+				time.year,
+				time.month,
+				time.day,
+				time.hour,
+				time.minute,
+				time.second,
+				artobj.name
+			])
+			for key,val in epoch.items():
+				epochtimes[key] = val
 
-		files = len(output)-1 #total amount of files found
-		#files_pdf = len(output_pdf)-1
-		found = 0
+		sorted_list = sorted(epochtimes) #use built-in sorted to get chronological order (oldest -> newest)
 
-		for fileinfo in output: #resolves timestamps and file names in the art directory
-			if self.ispdf(fileinfo):
-				pdfnum = re.search(self.pdf_regx, fileinfo, re.IGNORECASE)
-				if pdfnum:
-					for entry in dbinfo:
-						if entry.name == pdfnum.group(1):
-							time = entry.uploadtime
-							epoch = self.time2epoch([
-								time.year,
-								time.month,
-								time.day,
-								time.hour,
-								time.minute,
-								time.second,
-								pdfnum.group(1)
-							])
-							for key,val in epoch.items():
-								epochtimes[key] = val
-								found += 1
-			elif self.isimg(fileinfo):
-				epoch = re.findall(self.epoch_regx, fileinfo, re.IGNORECASE) #will return an array with a tuple which contains the matched regex ex: [(0, 1, ..., 6)]
-				if epoch:
-					epoch = self.time2epoch(epoch[0])
-					for key,val in epoch.items():
-						epochtimes[key] = val
-						found += 1
-
-####			pdf_dirs[int(pdfnum[0])] = len(
-####				subprocess.check_output(
-####					['ls', self.artpath + 'pdf/pdfobj{num}/'.format(num=pdfnum[0])]
-####				).decode('UTF-8').split('\n')
-####			)-1
-	
-		unordered = sorted(epochtimes) #use built-in sorted to get chronological order (oldest -> newest)
-		if len(unordered) == found:
-			self.updatedb_unsorted(False)
-		else:
-			self.updatedb_unsorted(True)
-
-		for x in range(len(unordered)): #formulate usable info from what we got
+		for x in range(len(sorted_list)):
 			current = None
-			for fileinfo in output:
-				if self.ispdf(fileinfo):
-					current = re.search(self.pdf_regx, fileinfo, re.IGNORECASE)
-					if current:
-						pdf_images = len(
-							self.ls_artpath(
-								child_dir='pdf/{pdfobj}'.format(
-									pdfobj=current.group(1)
-								),
-								full=False
-							).split('\n')
-						)-1
-						current = (current.group(1), pdf_images) #(pdf folder name, amount of images in pdf)
-						break;
-				elif self.isimg(fileinfo):
-					error = 0
-					current = re.findall(self.img_regx, fileinfo, re.IGNORECASE)
-					if current:
-						current = current[0]
-						current = i('{path}{name}.{ext}'.format(path=artpath, name=current[0], ext=current[1]))
-						if current.error is None:
-							error = None
-						if current.file.name == epochtimes[unordered[x]]:
-							break;
+			for artobj in dbinfo:
+				if artobj.name == epochtimes[sorted_list[x]]:
+					if artobj.type == 'img':
+						current = i('{path}{name}'.format(path=artpath, name=artobj.name))
+					if artobj.type == 'pdf':
+						current = p('{path}pdf/{name}/'.format(path=artpath, name=artobj.name))
+					error = current.error
+					break;
 			if error is None:
 				art.append(current)
-			else:
-				print('ERROR: no valid format')
-
 
 		ordered = []
-		for z in range(len(unordered)-1, -1, -1): #sort files (newest -> oldest)
+		for z in range(len(sorted_list)-1, -1, -1): #sort files (newest -> oldest)
 			for x in range(len(art)):
-				if type(art[x]) is tuple:
-					if art[x][0] == 'pdfobj{num}'.format(num=z):
+				if type(art[x]) is p:
+					if art[x].pdfobj.name == epochtimes[sorted_list[z]]:
 						ordered.append(art[x])
 						break;
 					continue;
 				elif type(art[x]) is i:
-					if art[x].file.name == epochtimes[unordered[z]]:
+					if '{name}.{ext}'.format(name=art[x].file.name, ext=art[x].file.ext) == epochtimes[sorted_list[z]]:
 						ordered.append(art[x])
 						break;
-
-		for key,val in pdf_dirs.items():
-			ordered.insert(key-1, 'pdfobj{num};{val}'.format(num=key, val=val))
-
 		return ordered
 
 class art_api:
@@ -240,10 +162,21 @@ class art_api:
 		self.security = user_security(self.request)
 		self.settings = self.request.registry.settings
 		self.artpath = '{root}{uri}'.format(root=self.settings['htmlfolder'], uri=self.settings['art.uri'])
+		self.pdfpath = '{path}pdf/'.format(path=self.artpath)
 		self.filetypes = r'{regx}'.format(regx=self.settings['allowed_filetypes.images'])
-		art = art_functions(request, self.artpath)
-		self.files = art.get_objects(self.artpath)
+		self.art = art_functions(request, self.artpath)
+		self.files = self.art.get_objects(self.artpath)
 		self.elements = art_elements(self.files, self.settings)
+		self.time_now = datetime.now() #get time in datetime format for SQLAlchemy
+		self.date = self.time_now.strftime('%S%M%H%y') #use datetime.strftime to get filename date
+
+	def object_sort(self):
+		dbinfo = self.request.dbsession.query(Art).all()
+		for x in range(len(dbinfo)):
+			fullpath = '{path}{name}'.format(path=self.artpath, name=dbinfo[x].name)
+			if isfile(fullpath) and dbinfo[x].type != 'pdf':
+				subprocess.call(['touch', '-t', dbinfo[x].uploadtime.strftime('%y%m%d%H%M.%S'), fullpath])
+		return
 	
 	def store_file(self, filename, path):
 		if movefile(
@@ -282,7 +215,7 @@ class art_api:
 
 		for x in range(len(pdf_images)):
 			img = i(pdf_images[x], openfile=True)
-			compress = imgcompress(img, 0.1, (600, 600), (1250, 1250)) #(image file, max file size, minimum dimensions, maximum dimensions)
+			compress = imgcompress(img, 0.1, (900, 900), (1750, 1750)) #(image file, max file size, minimum dimensions, maximum dimensions)
 			try:
 				newimg = compress.compress_pdf()
 				if newimg is (IOError or OSError):
@@ -302,7 +235,7 @@ class art_api:
 			return self.resp_status.error(4)
 
 		try: #add the time file was uploaded to the database
-			dbimage = Art(type='pdf', name=foldername, uploadtime=self.time_now, cached=False)
+			dbimage = Art(type='pdf', name=foldername, uploadtime=self.time_now)
 			self.request.dbsession.add(dbimage)
 			self.request.dbsession.flush()
 		except:
@@ -352,7 +285,7 @@ class art_api:
 			return thumb
 
 		try: #add the time file was uploaded to the database
-			dbimage = Art(type='img', name=artname, uploadtime=self.time_now, cached=False)
+			dbimage = Art(type='img', name=artname, uploadtime=self.time_now)
 			self.request.dbsession.add(dbimage)
 			self.request.dbsession.flush()
 		except:
@@ -360,8 +293,6 @@ class art_api:
 		return self.resp_status.ok(1)
 
 	def add(self):
-		self.time_now = datetime.now() #get time in datetime format for SQLAlchemy
-		self.date = self.time_now.strftime('%S%M%H%y') #use datetime.strftime to get filename date
 		filenum = len(
 			self.request.dbsession.query(Art).order_by(Art.id).all()
 		)+1
@@ -382,61 +313,68 @@ class art_api:
 			return self.add_pdf(filenum)
 		else:
 			return self.add_image(filenum, filetype)
+	
+	def remove_pdf(self, art):
+		if isdir(art.pdfobj.fullpath):
+			subprocess.call(['rm', '-rf', art.pdfobj.fullpath])
+		try:
+			self.request.dbsession.query(Art).filter(
+				Art.name==art.pdfobj.name
+			).delete()
+			self.request.dbsession.flush()
+		except (NoResultFound, DataError):
+			return self.resp_status.warn(2)
+		return None
 
-	def remove(self):
-		art = thumb = None
-		art_dst = '/usr/local/{projectname}/.cached/'.format(projectname=self.settings['project_name'])
-
-		if self.request.POST['art-submit'] is None:
-			return self.resp_status.error(10)
-		
-		artnum = re.search(r'artdel(\d+)', self.request.POST['art-submit']) #check and retrieve the filename from the request
-		if artnum is None:
-			return self.resp_status.error(10)
-		artnum = int(artnum.group(1))
-		
-		for x in self.files:
-			if x.file.number == artnum:
-				art = x
-				break;
-		if not art:
-			return self.resp_status.error(6)
-
-		if isfile(art.fullpath): #figure out if the thumbnail exists and delete it
-			thumb = i(
-				'{path}{filename}-thumbnail.{ext}'.format(
-					path=art.file.path,
-					filename=art.file.name,
-					ext=art.file.ext
-				)
-			)
-			if thumb.error is not None:
-				return self.resp_status.error(7)
-			if isfile(thumb.fullpath):
-				subprocess.call(['rm', '-f', thumb.fullpath])
-			else:
-				return self.resp_status.error(7)
-		else:
-			return self.resp_status.error(6)
-
-		if movefile(
-			'{name}.{ext}'.format(name=art.file.name, ext=art.file.ext), #filename
-			art.file.path, #src
-			art_dst #dst
-		) is not None:
-			return self.resp_status.error(11)
-
+	def remove_img(self, art):
+		thumb = '{path}{filename}-thumbnail.{ext}'.format(
+			path=art.file.path,
+			filename=art.file.name,
+			ext=art.file.ext
+		)
+		if isfile(thumb): #figure out if the thumbnail exists and delete it
+			subprocess.call(['rm', '-f', thumb])
+		if isfile(art.file.fullpath):
+			subprocess.call(['rm', '-f', art.file.fullpath])
 		try:
 			self.request.dbsession.query(Art).filter(
 				Art.name=='{filename}.{ext}'.format(
 					filename=art.file.name,
 					ext=art.file.ext
 				)
-			).update(values={'cached': True})
+			).delete()
 			self.request.dbsession.flush()
 		except (NoResultFound, DataError):
 			return self.resp_status.warn(2)
+		return None
 
-		response = self.resp_status.ok(2)
-		response.text = response.text.format(number=artnum)
+	def remove(self):
+		art = thumb = None
+
+		if self.request.POST['art-submit'] is None:
+			return self.resp_status.error(10)
+		
+		artnum = re.search(r'(?:artdel|pdfobj_del)(\d+)', self.request.POST['art-submit']) #check and retrieve the filename from the request
+		if artnum is None:
+			return self.resp_status.error(10)
+		artnum = int(artnum.group(1))
+		
+		for x in self.files:
+			if type(x) is i or type(x) is p:
+				if x.number == artnum:
+					art = x
+					break;
+		if not art:
+			return self.resp_status.error(6)
+
+		result = None
+		if type(art) is p:
+			result = self.remove_pdf(art)
+		if type(art) is i:
+			result = self.remove_img(art)
+		if result:
+			response = result
+		else:
+			response = self.resp_status.ok(2)
+			response.text = response.text.format(number=artnum)
 		return response

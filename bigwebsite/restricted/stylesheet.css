@@ -48,6 +48,17 @@ input,label,button{
 	padding-top: 1em;
 }
 
+#notes{
+	display: inline-block;
+	width: 24em;
+	max-width: 90%;
+	margin-bottom;
+}
+
+#notes h2{
+	margin: 2vh auto;
+}
+
 .infobubble{
 	width: 21.5em;
 }
@@ -56,16 +67,6 @@ input,label,button{
 	cursor: pointer;
 	max-height: 20px;
 	display: inline-block;
-}
-
-iframe,.ytcontainer div{
-	position: relative;
-	z-index: 0 !important;
-	cursor: auto;
-	height: 9vw;
-	width: 16vw;
-	max-width: 112vh;
-	max-height: 63vh;
 }
 
 object{
@@ -81,12 +82,8 @@ object{
 	cursor: pointer;
 }
 
-.border{
-	z-index: 99 !important;
-	cursor: auto;
-	height: 9.1vw;
-	width: 16.3vw;
-	position: absolute;
+.thumbnail{
+	height: 10vw;
 	pointer-events: none;
 }
 

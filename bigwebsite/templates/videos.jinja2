@@ -13,12 +13,13 @@
 	<link href="videos/content/stylesheet.css" rel="stylesheet">
 </head>
 <body>
-	{% for item in videohtml %}
+	{% for video in videohtml %}
 	<div class="container">
-{{ item|safe }}
 	</div>
 	{% endfor %}
 	<a href="/"><img id="backbutton" src="/content/backbutton.png"></a>
 </body>
-<script type="text/javascript" src="videos/content/videoload.js"></script>
+<script type="text/javascript" src="scripts/jquery.js"></script>
+<script type="text/javascript" src="scripts/videoload.js"></script>
+<script type="text/javascript" src="scripts/videopage.js"></script>
 </html>

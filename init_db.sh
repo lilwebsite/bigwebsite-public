@@ -27,4 +27,3 @@ done
 
 systemctl stop bigwebsite
 ~/bws.env/bin/initialize_bigwebsite_db /usr/local/bigwebsite/development.ini
-systemctl start bigwebsite

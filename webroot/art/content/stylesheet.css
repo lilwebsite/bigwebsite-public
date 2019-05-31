@@ -9,22 +9,23 @@ html,body{
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
+	background-color: #fcfefb;
 }
 
 #imgcontainer{
 	margin: 8% 0;
 }
 
-.container{
+.container, .pdfobj{
 	display: block;
 	text-align: center;
 	height: auto;
 	padding-top: 1em;
 	-webkit-padding-top: 1em;
-	max-width: 85%;
+	max-width: 100%;
 }
 
-.art{
+.art, .pdf{
 	object-fit: contain;
 	margin: 4% 5% 0 5%;
 	min-width: 50%;
@@ -102,14 +103,14 @@ a{
 		grid-gap: 0px 0px;
 	}
 
-	.container{
+	.container, .pdfobj{
 		display: grid;
 		justify-self: center;
 		align-self: center;
 		min-width: 100%;
 	}
 
-	.container img{
+	.art, .pdf{
 		max-width: initial;
 		display: inline-grid;
 		grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -127,7 +128,7 @@ a{
 		}
 	}
 
-	.container{
+	.container, .pdfobj{
 		max-width: 100%;
 	}
 
@@ -138,6 +139,36 @@ a{
 	#imgcontainer{
 		margin: 8% 0;
 	}
+}
+
+.control-vis{
+	pointer-events: all;
+	display: initial;	
+}
+
+.control-novis{
+	pointer-events: none;
+	display: none;
+}
+
+#back, #next{
+	position: fixed;
+	max-width: 20%;
+	max-height: 25%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	object-fit: contain;
+	text-align: center;
+	cursor: url("/content/selectcursor.gif"), auto;
+	z-index: 100;
+}
+
+#back{
+	left: 10%;
+}
+
+#next{
+	left: 90%;
 }
 
 .dim-vis{

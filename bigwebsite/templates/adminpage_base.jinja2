@@ -3,7 +3,7 @@
 <head>
 	<title>admin page</title>
 	<link href="restricted/stylesheet.css" rel="stylesheet">
-	<link rel=icon href="/content/favicon.ico" type="image/x-icon" />
+	<link rel=icon href="content/favicon.ico" type="image/x-icon" />
 	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 	<meta http-equiv="Pragma" content="no-cache"/>
 	<meta http-equiv="Expires" content="0"/>
@@ -32,14 +32,19 @@
 </div>
 <div id="videocontainer" style="display:none">
 	<div id="addvideo">
-		<h1>add video</h1>
-		<br>
+		<h1 style="margin: 0.25em auto;">add video</h1>
+		<div id="notes">
+			<h2>take note:</h2>
+			<p>When adding a border for the video, the background <b>must not</b> be pure white. Specifically, it needs to be color code <b>#fcfefb</b> (R:252, G:254, B:251)</p>
+			<p>It must be this color to match the background correctly. Below is a box with the correct color for reference.</p>
+			<div id="color-square" style="background-color: #fcfefb; display: inline-block; width: 1em; height: 1em; margin: 1em;"></div>
+		</div>
 		<div id="videoadd-result"></div>
 		<form id="formytadd" action="" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 			<p>add a youtube link</p>
 			<input type="text" name="url" placeholder="paste youtube url">
-			<label for="thumbnail">add border image (png only)</label>
-			<input type="file" name="thumbnail" value="">
+			<label for="border">add border image (png only)</label>
+			<input type="file" name="border" value="">
 			<button type="submit" name="video-submit" value="videourl">submit</button>
 		</form>
 		<br>
@@ -51,24 +56,19 @@
 		<input type="file" name="thumbnail">
 		<button type="submit" name="video-submit" value="videofile">submit</button>
 		</form>-->
-		<div id="videodel-result"></div>
 	</div>
 	<div id="removevideo">
-		<p>remove video</p>
-		{% for video in videohtml %}
-		<br>
-		<form class="videodelete" action="" method="post">
-			<button type="submit" name="video-submit" value="videodel{{ video.num|safe }}">delete video {{ video.num|safe }}</button>
-		</form>
-		<div class="ytcontainer">{{ video.html|safe }}</div>
-		{% endfor %}
+		<div id="videodel-result"></div>
+		<div id="videodelete">
+			{% include "videolist.jinja2" %}
+		</div>
 	</div>
 </div>
 <div id="artcontainer" style="display:none">
 	<div id="addart">
 		<h1>add art</h1>
 		<br>
-		<p>add an art file (jpg/jpeg, png, gif, bmp, webp)</p>
+		<p>add an art file (jpg/jpeg, png, gif, bmp, webp, pdf)</p>
 		<div id="artadd-result"></div>
 		<form id="formartadd" action="" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 			<label for="art">add art image</label>
@@ -84,8 +84,7 @@
 	</div>
 </div>
 </body>
-<script type="text/javascript" src="restricted/jquery-3.3.1.js"></script>
-<script type="text/javascript" src="videos/content/videoload.js"></script>
+<script type="text/javascript" src="scripts/jquery.js"></script>
 <script type="text/javascript" src="restricted/adminpage.js"></script>
 </html>
 {% endblock %}

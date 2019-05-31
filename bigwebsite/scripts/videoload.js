@@ -1,45 +1,41 @@
-//most of this is pulled from the yt embed API reference. 
-//I shortened a couple variable names and added a variable
-//generator for each iframe
+window.YTloaded = false;
+window.currentVideo = new Object();
+currentVideo.thumbnail =
+currentVideo.ytframe =
+currentVideo.border =
+currentVideo.html = undefined;
+currentVideo.loaded = false;
 
-window.onload = function(){
-	window.tag = document.createElement('script');
-	tag.src = 'https://www.youtube.com/iframe_api';
-	window.firsttag = document.getElementsByTagName('script')[0];
-	firsttag.parentNode.insertBefore(tag, firsttag);
-
-	window.iframes = document.getElementsByClassName('ytframe');
-	window.videoid = [];
-	window.iframeid = [];
-
-	for (x = 0; x < iframes.length; x++){
-		videoid[x] = iframes[x].attributes.ytsrc.value;
-		iframeid[x] = 'iframe' + x;
-		iframes[x]['id'] = iframeid[x];
-	}
+function setclass(target){
+	info = new Object();
+	info.group = target;
+	info.type_vis = info.group + '-vis';
+	info.type_nonvis = info.group + '-nonvis';
+	return info;
 }
 
-function onYouTubeIframeAPIReady(){
-	for (x = 0; x < iframes.length; x++){
-		window[iframeid[x]] = new YT.Player(iframeid[x], {
-			height: '46vw',
-			width: '80vw',
-			videoId: videoid[x],
-			playerVars: {
-				'origin': 'https://www.bigwebsite.cool',
-				'autoplay': 0,
-				'controls': 0,
-				'modestbranding': 1,
-				'rel': 0,
-				'showinfo': 0,
-				'widget_referrer': 'bigwebsite.cool'
-				},
-			events: {
-				'onStateChange': onPlayerStateChange
-			}
-		});
+window.classes = {
+	thumbnail: setclass('thumbnail'),
+	ytframe: setclass('ytframe'),
+	border: setclass('border')
+};
+
+function scan4id(targetID, targetList){
+	for(x = 0; x < targetList.length; x++){
+		if(targetList[x].id == targetID)
+		{return targetList[x];}
 	}
+	return undefined;
 }
+
+function getYTframeById(target)
+{return scan4id(target, window.iframes);}
+
+function getThumbnailById(target)
+{return scan4id(target, window.thumbnails);}
+
+function getBorderById(target)
+{return scan4id(target, window.borders);}
 
 function fixbutton(iframe){
 	setTimeout(function(){iframe.style.display = 'none'}, 15);
@@ -54,19 +50,70 @@ function fixzindex(){
 	setTimeout(function(){document.body.style.height = '100%';}, 1220);
 }
 
-function onPlayerStateChange(event){
-	if(event.data == YT.PlayerState.PLAYING){
-		chrome = /Chrome\/[\d\S]+/g;
-		result = chrome.exec(window.navigator.appVersion);
-		//below is to work out a bug where the player 
-		//won't remove the youtube play button when
-		//the video starts playing. doesn't happen in
-		//chrome
-		if(result === null){
-			fixbutton(event.target.a);
-		//below is to fix z-index problem
-		}else if(result !== null){
-			fixzindex();
-		}
+function unloadVideo(){
+	if(!currentVideo.loaded)
+	{return;}
+	currentVideo.thumbnail.className = `${classes.thumbnail.group} ${classes.thumbnail.type_vis}`;
+	currentVideo.border.className = `${classes.border.group} ${classes.border.type_nonvis}`;
+	currentVideo.ytframe.className = `${classes.ytframe.group} ${classes.ytframe.type_nonvis}`;
+	currentVideo.ytframe.a.outerHTML = currentVideo.html;
+}
+
+function loadVideo(){
+	if(!currentVideo.loaded)
+	{return;}
+	currentVideo.thumbnail.className = `${classes.thumbnail.group} ${classes.thumbnail.type_nonvis}`;
+	currentVideo.border.className = `${classes.border.group} ${classes.border.type_vis}`;
+	currentVideo.ytframe.className = `${classes.ytframe.group} ${classes.ytframe.type_vis}`;
+	currentVideo.ytframe.id = 'current_video'
+	currentVideo.ytframe = new YT.Player('current_video', {
+		height: '46vw',
+		width: '80vw',
+		videoId: currentVideo.ytframe.attributes.ytsrc.value,
+		playerVars: {
+			'origin': `https://${location.host}`,
+			'autoplay': 0,
+			'controls': 0,
+			'modestbranding': 1,
+			'rel': 0,
+			'showinfo': 0,
+			'widget_referrer': location.host
+			},
+		events: {'onReady': function(){
+			currentVideo.ytframe.playVideo();
+		}}
+	});
+}
+
+function onYouTubeIframeAPIReady(){
+	loadVideo();
+	YTloaded = true;
+}
+
+function initYTscripts(){
+	if(YTloaded){return;}
+	window.tag = document.createElement('script');
+	tag.src = 'https://www.youtube.com/iframe_api';
+	window.firsttag = document.getElementsByTagName('script')[0];
+	firsttag.parentNode.insertBefore(tag, firsttag);
+}
+
+function initPage(){
+	window.iframes = document.getElementsByClassName('ytframe');
+	window.thumbnails = document.getElementsByClassName('thumbnail');
+	window.borders = document.getElementsByClassName('border');
+	for(x = 0; x < thumbnails.length; x++){
+		thumbnails[x].addEventListener('click', function(){
+			if(currentVideo)
+			{unloadVideo();}
+			currentVideo.thumbnail = this;
+			currentVideo.ytframe = getYTframeById(this.id);
+			currentVideo.border = getBorderById(this.id);
+			currentVideo.html = currentVideo.ytframe.outerHTML;
+			currentVideo.loaded = true;
+			if(!YTloaded)
+			{return initYTscripts();}
+			loadVideo();
+		});
 	}
 }

@@ -22,10 +22,10 @@
 	object-fit: contain;
 	z-index: 98;
 	max-width: 42%;
-	width: 6.5em;
+	width: 6em;
 	cursor: url("/content/selectcursor.gif"), auto;
 	position: absolute;
-	left: 2%;
+	left: 1%;
 	top: 0;
 }
 
@@ -84,7 +84,7 @@
 	
 	#signinbroken{
 		min-height: 10%;
-		max-width: 30vw;
+		max-width: 40vw;
 		max-height: 9vw;
 	}
 }

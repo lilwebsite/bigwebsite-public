@@ -1,12 +1,19 @@
 var contents = [$('#videocontainer')[0], $('#artcontainer')[0], $('#settingscontainer')[0]];
+var loading = '<p style="color: yellow">uploading...</p>'
+
+function handleResponse(resp){
+	if(resp.status == 403)
+	{window.location.href = 'logout';}
+}
 
 function refreshVideos(){
 	$.ajax({
 		type: 'GET',
 		url: window.location.href + '/videolist'
-	}).done(function(response2){
-		$('#videodelete').html(response2);
-		window.location.href = window.location.pathname + window.location.search + window.location.hash;
+	}).done(function(resp){
+		$('#videodelete').html(resp);
+	}).always(function(response){
+		handleResponse(response);
 	});
 }
 
@@ -14,8 +21,10 @@ function refreshArt(){
 	$.ajax({
 		type: 'GET',
 		url: window.location.href + '/artlist'
-	}).done(function(response2){
-		$('#artdelete').html(response2);
+	}).done(function(resp){
+		$('#artdelete').html(resp);
+	}).always(function(response){
+		handleResponse(response);
 	});
 }
 
@@ -43,10 +52,16 @@ function contentSelect(contentid){
 	}
 }
 
+function switchTabs(target){
+	buttonSelect(target);
+	contentSelect(target.attributes.contentid);
+}
+
 $('#formytadd').on('submit', function(event){
 	event.preventDefault();
 	videoadd = new FormData($(this)[0]);
 	videoadd.append('video-submit', 'videourl');
+	$('#videoadd-result').html(loading);
 	$.ajax({
 		type: 'POST',
 		url: window.location.href,
@@ -57,6 +72,8 @@ $('#formytadd').on('submit', function(event){
 	}).done(function(response){
 		$('#videoadd-result').html(response);
 		refreshVideos();
+	}).always(function(response){
+		handleResponse(response);
 	});
 });
 
@@ -74,6 +91,8 @@ $('#videodelete').on('submit', '.videodelete', function(event){
 	}).done(function(response){
 		$('#videodel-result').html(response);
 		refreshVideos();
+	}).always(function(response){
+		handleResponse(response);
 	});
 });
 
@@ -87,6 +106,7 @@ $('#formartadd').on('submit', function(event){
 		result = regex.exec(file.files[0].name);
 		if(result != undefined){
 			artadd.append('filename', result[0]);
+			$('#artadd-result').html(loading);
 			$.ajax({
 				type: 'POST',
 				url: window.location.href,
@@ -97,6 +117,8 @@ $('#formartadd').on('submit', function(event){
 			}).done(function(response){
 				$('#artadd-result').html(response);
 				refreshArt();
+			}).always(function(response){
+				handleResponse(response);
 			});
 		} else {
 			$('#artadd-result').html('<p stle="color: red">invalid file format</p>');
@@ -118,23 +140,20 @@ $('#artdelete').on('submit', '.artdelete', function(event){
 	}).done(function(response){
 		$('#artdel-result').html(response);
 		refreshArt();
+	}).always(function(response){
+		handleResponse(response);
 	});
 });
 
-$('#arttab').on('click', function(event){
-	buttonSelect(this);
-	contentSelect(this.attributes.contentid);
-});
+function tabCallback(event){
+	switchTabs(this);
+};
 
-$('#videostab').on('click', function(event){
-	buttonSelect(this);
-	contentSelect(this.attributes.contentid);
-});
+$('#arttab').on('click', tabCallback);
 
-$('#settingstab').on('click', function(event){
-	buttonSelect(this);
-	contentSelect(this.attributes.contentid);
-});
+$('#videostab').on('click', tabCallback);
+
+$('#settingstab').on('click', tabCallback);
 
 $('#info-checksort').on('click', function(event){
 	bubble = $('#checksort-bubble')[0];
@@ -151,6 +170,8 @@ window.onload = function(){
 	tag.src = 'https://www.youtube.com/iframe_api';
 	window.firsttag = document.getElementsByTagName('script')[0];
 	firsttag.parentNode.insertBefore(tag, firsttag);
+	default_tab = document.getElementById('arttab');
+	switchTabs(default_tab);
 
 	window.iframes = document.getElementsByClassName('ytframe');
 	window.videoid = [];

@@ -18,7 +18,7 @@ class User(Base):
 		return False
 
 	def __repr__(self):
-		return "[[User]]\tusername='{username}', permission='{permission}'".format(
+		return "[[User]]\tusername='{username}', permission='{permission}'\n".format(
 			username=self.username,
 			permission=self.permission
 		)
@@ -30,29 +30,29 @@ class Art(Base):
 	type = Column(Text(3), nullable=False)
 	name = Column(Text(30), nullable=False, unique=True)
 	uploadtime = Column(DateTime, nullable=False, unique=True)
-	cached = Column(Boolean(create_constraint=False), nullable=False)
 
 	def __repr__(self):
-		return "\n[[Art]]\ttype='{type}', name='{name}', uploadtime='{upload}', cached='{cached}'".format(
+		return "[[Art]]\ttype='{type}', name='{name}', uploadtime='{upload}'\n".format(
 			type = self.type,
 			name = self.name,
 			upload = self.uploadtime,
-			cached = self.cached
 		)
 
 class Video(Base):
 	__tablename__ = 'video'
 
 	id = Column(Integer, primary_key=True)
-	name = Column(Text(30), nullable=False, unique=True)
-	ytid = Column(Text(15), nullable=False, unique=True)
-	cached = Column(Boolean(create_constraint=False), nullable=False)
+	border = Column(Text(30), nullable=False, unique=True)
+	thumbnail = Column(Text(30), nullable=False, unique=True)
+	ytid = Column(Text(15), nullable=False, unique=False)
+	uploadtime = Column(DateTime, nullable=False, unique=True)
 
 	def __repr__(self):
-		return "\n[[Video]]\tname='{name}', ytid='{ytid}', cached='{cached}'".format(
-			name = self.name,
+		return "[[Video]]\tborder='{border}', thumbnail='{thumbnail}', ytid='{ytid}', uploadtime='{upload}'\n".format(
+			border = self.border,
+			thumbnail = self.thumbnail,
 			ytid = self.ytid,
-			cached = self.cached
+			upload = self.uploadtime
 		)
 
 class AdminPage(Base):
@@ -62,4 +62,6 @@ class AdminPage(Base):
 	unsorted = Column(Boolean(create_constraint=False), nullable=True)
 
 	def __repr__(self):
-		return "\n[[AdminPage]]\tunsorted='{unsorted}'".format(unsorted = self.unsorted)
+		return "[[AdminPage]]\tunsorted='{unsorted}'\n".format(
+			unsorted = self.unsorted
+		)

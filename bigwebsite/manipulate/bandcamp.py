@@ -6,8 +6,8 @@ embed_width = 350
 embed_height = (470, 442) #(album height, track height)
 embed = '<iframe style="border: 0; width: {width}px; height: {height}px;" src="https://bandcamp.com/EmbeddedPlayer/{embed_type}={embed_id}/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/transparent=true/" seamless></iframe>' #format arguments: (width, height, type, id)
 
-def get_bigwebsite_bandcamp():
-	pipe = subprocess.Popen(['curl', '-sG', 'https://bigwebsite.bandcamp.com/'], stdout=subprocess.PIPE)
+def get_bigwebsite_bandcamp(bandcamp):
+	pipe = subprocess.Popen(['curl', '-sG', bandcamp], stdout=subprocess.PIPE)
 	found = subprocess.check_output(['grep', 'data-item-id'], stdin=pipe.stdout).decode('UTF-8').split('\n')
 	output = []
 	for entry in found:
@@ -22,9 +22,10 @@ def get_bigwebsite_bandcamp():
 			break;
 	return output
 
-def formulate_embeds():
+def formulate_embeds(bandcamp):
 	embeds = []
-	for entry in get_bigwebsite_bandcamp():
+	limit = 9
+	for entry in get_bigwebsite_bandcamp(bandcamp):
 		for key,val in entry.items():
 			if key == 'album':
 				embeds.append(embed.format(
@@ -40,4 +41,6 @@ def formulate_embeds():
 				embed_type = key,
 				embed_id = val
 			))
+		if len(embeds) is limit:
+			break;
 	return embeds

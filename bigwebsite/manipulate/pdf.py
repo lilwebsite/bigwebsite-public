@@ -48,7 +48,6 @@ def xobj2image(image):
 		loaded = loadimg(image)
 	return loaded
 
-#pdf2images(open('file.pdf', 'rb'))
 def pdf2images(pdf):
 	pdf_images = extract_pdf_objects(pdf)
 	return xobj2image(pdf_images)

@@ -1,7 +1,6 @@
 import os
 import sys
 import transaction
-import pdb
 
 from pyramid.paster import (
 	get_appsettings,
@@ -41,11 +40,14 @@ def main(argv=sys.argv):
 	with transaction.manager:
 		#dbsession = get_tm_session(session_factory, transaction.manager)
 		while True:
+			uname = input('first time username: ')
+			pword = input('first time password: ')
+			perm = int(input('permission(0/1): '))
 			admin = User(
-				username=input('first time username: '),
-				permission=int(input('permission(0/1): '))
+				username=uname,
+				permission=perm
 			)
-			admin.create_user(input('first time password: '))
+			admin.create_user(pword)
 			dbsession.add(admin)
 			if input('create another user? y/n\n') != 'y':
 				break;

@@ -1,14 +1,17 @@
 from bigwebsite.models import (
 	User,
-	AdminPage
+	AdminPage,
+	Art
 )
 from bigwebsite.include.views import *
 from bigwebsite.include.os import * 
 from bigwebsite import forbidden
+from bigwebsite.json import view_json
 from bigwebsite.security import user_security
-from bigwebsite.web import video
+from bigwebsite.web.video import video
 from bigwebsite.web.art import art_api as art
 from bigwebsite.manipulate.bandcamp import formulate_embeds as bandcamp_embeds
+from bigwebsite.include.debug import *
 
 #alias for list()
 def aliasl(l):
@@ -41,95 +44,86 @@ class adminViews(html_setup):
 		self.settings = self.request.registry.settings
 		#get defaults
 		self.getout = self.settings['htmlfolder'] + self.settings['getout'] 
+		self.getout = Response(open(self.getout, 'r').read())
 		#get the user information
 		self.security = user_security(self.request)
 		#initialize the site functions
-		self.vid = video(self.request)
+		self.video = video(self.request)
 		self.art = art(self.request)
 
 	@view_config(route_name='logout', renderer=None)
 	def logout(self):
 		return self.security.logout()
 	
+	def return_login(self):
+		response = self.security.login()
+		if self.request.params and not 'form-submit' in self.request.params:
+			response = self.getout
+			response.status = 403
+		return response
+
 	@view_config(route_name='adminpage', renderer='templates/adminpage.jinja2')
 	#@http_cache((0, {'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache'}))
 	def adminpage(self):
 		if self.security.isloggedin() is True and self.security.isadmin() is False:
-			response = self.security.login()
-			response.status = 403
-			return response
+			return self.return_login()
 		if not self.security.isadmin():
-			return self.security.login()
+			return self.return_login()
 		else:
 			self.request.response.status = 202 #accepted
 			returnval = {'page': 'adminpage'}
 			print('permission: {user}'.format(user = self.security.user.permission))
-			if self.request.params != None:
+			if self.request.params:
 				if 'video-submit' in self.request.params:
 					if self.request.POST['video-submit'] == 'videourl' or self.request.POST['video-submit'] == 'videofile': #if submitting video url or video file
-						return self.vid.add() #return videoadd response
+						return self.video.add() #return videoadd response
 					elif re.search(r'videodel\d+', self.request.POST['video-submit']) != None: #if submitting a delete request
-						return self.vid.remove() #return videoremove response
+						return self.video.remove() #return videoremove response
 				elif 'art-submit' in self.request.params:
 					if self.request.POST['art-submit'] == 'artimg':
 						return self.art.add()
-					elif re.search(r'artdel\d+', self.request.POST['art-submit']) != None:
+					elif re.search(r'(artdel|pdfobj_del)\d+', self.request.POST['art-submit']) != None:
 						return self.art.remove()
-				#elif 'checksort-submit' in self.request.params:
-				#	if self.request.POST['checksort-submit'] == 'checksort':
-				#		self.art.autoimagesort()
-			returnval['videohtml'] = [] #prepare to list the videos for the template
+				elif 'checksort-submit' in self.request.params:
+					if self.request.POST['checksort-submit'] == 'checksort':
+						self.art.object_sort()
+			returnval['videohtml'] = self.video.elements.html()
 			returnval['arthtml'] = self.art.elements.html()
-			thumbs = self.vid.getthumbs()
-			for x in range(len(thumbs)): #add the videos to the template
-				returnval['videohtml'].append(
-					{
-						'html': open('%svideo%s.html' % (self.vid.htmldir, str(x+1)), 'r+').read(),
-						'num': x+1
-					}
-				)
 			returnval['unsorted'] = self.request.dbsession.query(AdminPage).get(1).unsorted
 			return returnval
-		return self.security.login() 
+		return self.return_login()
 
 	@view_config(route_name='videolist', renderer='templates/videolist.jinja2')
 	def videolist(self):
 		if not self.security.isadmin():
-			return Response(open(self.getout, 'r').read())
+			return self.getout
 		else:
-			thumbs = self.vid.getthumbs()
-			returnval = {'videohtml': []}
-			for x in range(len(thumbs)):
-				#add the videos to the template
-				returnval['videohtml'].append({'html': open('%svideo%s.html' % (vid.htmldir, str(x+1)), 'r+').read(), 'num': x+1})
-			return returnval
-		return Response(open(self.getout, 'r').read())
+			return {'videohtml': self.video.elements.html()}
+		return self.getout
 
 	@view_config(route_name='artlist', renderer='templates/artlist.jinja2')
 	def artlist(self):
 		if not self.security.isadmin():
-			return Response(open(self.getout, 'r').read())
+			return self.getout
 		else:
 			returnval = {'arthtml': self.art.elements.html()}
 			return returnval
-		return Response(open(self.getout, 'r').read())
+		return self.getout
 
 class bigwebsiteViews:
 	def __init__(self, request):
 		self.request = request
 		self.settings = self.request.registry.settings
-		self.vid = video(self.request)
-		self.art = art(self.request)
+		self.video = video(request)
+		self.art = art(request)
 		self.response = {'hostname': self.settings['hostname']}
+		self.json = view_json(self.request)
 
 	def checkemail(self, email):
 		return re.search(r'[A-Z0-9.%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}', email, re.IGNORECASE)
 
 	@view_config(route_name='devtest', renderer='templates/dev.jinja2')
 	def devtest(self):
-		image = Art(name='test.jpg', uploadtime=datetime.now())
-		self.request.dbsession.add(image)
-		self.request.dbsession.flush()
 		return self.response
 
 	@view_config(route_name='home', renderer='templates/site.jinja2')
@@ -146,17 +140,28 @@ class bigwebsiteViews:
 
 	@view_config(route_name='videos', renderer='templates/videos.jinja2')
 	def bigwebsite_videos(self):
-		thumbs = self.vid.getthumbs()
-		self.response['videohtml'] = []
-		for x in range(len(thumbs)-1, -1, -1):
-			self.response['videohtml'].append(open('%svideo%s.html' % (self.vid.htmldir, str(x+1)), 'r+').read())
+		thumbs = self.video.elements.html()
+		self.response['videohtml'] = self.video.elements.html()
 		return self.response
 
+	@view_config(route_name='videoquery', renderer='json')
+	def video_query(self):
+		return self.json.query()
+	
+	@view_config(route_name='videocontainers', renderer='templates/videocontainers.jinja2')
+	def video_containers(self):
+		if self.request.params is not None and 'videocontainers' in self.request.POST:
+			limit = int(self.request.post['videocontainers'])
+			if type(limit) is int:
+				self.art_limit = limit
+		self.response['arthtml'] = self.get_videocontainers()
+		return self.response
+	
 	@view_config(route_name='contact', renderer='templates/contact.jinja2')
 	def bigwebsite_contact(self):
 		if 'email' in self.request.params:
 			if self.checkemail(self.request.POST['email']) is not None:
-				message = 'Someone has submitted a new email request for {email} on the contact page.'.format(email = self.request.POST['email'])
+				message = 'Someone has submitted a new email request for {email} on the contact page. Send a message their way in response.'.format(email = self.request.POST['email'])
 				pipe = subprocess.Popen(('echo', message), stdout=subprocess.PIPE)
 				subprocess.call(('mail', '-s', 'email request', 'dylan@localhost'), stdin=pipe.stdout)
 				return Response('ok')
@@ -171,10 +176,19 @@ class bigwebsiteViews:
 	def bigwebsite_demands(self):
 		return self.response
 
+	def get_artcontainers(self):
+		all_images = self.art.elements.html()
+		images = []
+		for x in range(len(all_images)):
+			if x >= self.json.art_limit:
+				break;
+			images.append(all_images[x])
+		return images
+	
 	@view_config(route_name='art', renderer='templates/art.jinja2')
 	def bigwebsite_art(self):
 		self.response['loneimage'] = False
-		self.response['arthtml'] = self.art.elements.html()
+		self.response['arthtml'] = self.get_artcontainers()
 		if 'img' in self.request.params:
 			for x in self.art.formathtml():
 				if x[3] == self.request.GET['img']:
@@ -183,9 +197,22 @@ class bigwebsiteViews:
 					return self.response
 		return self.response
 
+	@view_config(route_name='artquery', renderer='json')
+	def art_query(self):
+		return self.json.query()
+	
+	@view_config(route_name='artcontainers', renderer='templates/artcontainers.jinja2')
+	def art_containers(self):
+		if self.request.params is not None and 'artcontainers' in self.request.POST:
+			limit = int(self.request.post['artcontainers'])
+			if type(limit) is int:
+				self.art_limit = limit
+		self.response['arthtml'] = self.get_artcontainers()
+		return self.response
+
 	@view_config(route_name='music', renderer='templates/music.jinja2')
 	def bigwebsite_music(self):
-		self.response['embeds'] = bandcamp_embeds()
+		self.response['embeds'] = bandcamp_embeds(self.settings['bandcamp'])
 		return self.response
 
 	@view_config(route_name='test', renderer='templates/testpage.jinja2')
@@ -196,13 +223,9 @@ class noscriptViews:
 	def __init__(self, request):
 		self.request = request
 		self.settings = self.request.registry.settings
-		self.vid = video(self.request)
+		self.video = video(self.request)
 		#self.art = art(self.art)
 		self.response = {'hostname': self.settings['hostname']}
-
-	@view_config(route_name='redir', renderer='templates/scripts/redir.jinja2')
-	def noscript_redirect(self):
-		return self.response
 
 	@view_config(route_name='noscript', renderer='templates/noscript.jinja2')
 	def bigwebsite_noscript(self):
@@ -210,8 +233,5 @@ class noscriptViews:
 
 	@view_config(route_name='noscript-videos', renderer='templates/noscript-videos.jinja2')
 	def videos_noscript(self):
-		thumbs = self.vid.getthumbs()
-		self.response['videos'] = []
-		for x in range(len(thumbs)-1, -1, -1):
-			self.response['videos'].append(open('%svideo%s.html' % (self.vid.htmldir, str(x+1)), 'r+').read())
+		self.response['videos'] = self.video.elements.html()
 		return self.response

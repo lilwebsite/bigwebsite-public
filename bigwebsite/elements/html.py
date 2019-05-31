@@ -11,26 +11,35 @@ params = '{params}' #placeholder for additional element values (for the DOM)
 
 class video_element:
 	def __init__(self):
-		border = img_element()
-		frame = div_element()
-		self.border = border.set_imgclass('border')
-		#youtube stuff
-		frame = frame.set_divclass('ytframe')
-		ytsrc = 'ytsrc="{ytsrc}"'
+		self.border = img_element()
+		self.thumb = img_element()
+		self.frame = div_element()
 
-	def set_frame_params(self, params):
-		self.frame = self.frame.format(params=params)
-		return self.frame
+	def set_frame_params(self, params, id):
+		frame = self.frame.set_div_class_id('ytframe ytframe-nonvis', id)
+		return frame.format(params=params)
 	
-	def set_border_src(self, uri): #sets the uri for the border image
-		self.border = self.border.format(uri=uri)
-		return self.border
+	def set_border_src(self, uri, id): #sets the uri for the border image
+		border = self.border.set_img_class_id('border border-nonvis', id)
+		return border.format(uri=uri)
+
+	def set_thumb_src(self, uri, id): #sets the uri for the thumbnail
+		thumb = self.thumb.set_img_class_id('thumbnail thumbnail-vis', id)
+		return thumb.format(uri=uri)
 
 class img_element:
 	img_class = '<img class="{classname}"'
+	img_id = ' id="{idname}" '
 	img_src = ' src="{uri}" />'
 	
-	def set_imgclass(self, classname):
+	def set_img_class_id(self, classname, idname):
+		return element[1].format(
+			begin = self.img_class.format(classname=classname),
+			mid = self.img_id.format(idname=idname),
+			end = self.img_src
+		)
+
+	def set_img_class(self, classname):
 		return element[2].format(
 			begin = self.img_class.format(classname=classname),
 			end = self.img_src
@@ -39,8 +48,15 @@ class img_element:
 class div_element:
 	close = '</div>'
 	div_class_params = '<div class="{classname}" {params}>'
+	div_class_id_params = '<div class="{classname}" id="{idname}" {params}>'
+
+	def set_div_class_id(self, classname, idname):
+		return element[2].format(
+			begin = self.div_class_id_params.format(classname=classname, idname=idname, params=params),
+			end = self.close
+		)
 	
-	def set_divclass(self, classname):
+	def set_div_class(self, classname):
 		return element[2].format(
 			begin = self.div_class_params.format(classname=classname, params=params),
 			end = self.close
