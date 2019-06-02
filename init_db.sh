@@ -11,13 +11,16 @@ _usage ()
 	echo
 	echo "-P		Use production.ini settings"
 	echo "			 Default: ${ini_file} settings"
+	echo "-D		Use test.ini settings"
+	echo "			 Default: ${ini_file} settings"
 	echo "-h		This help message"
 	exit ${1}
 }
 
-while getopts 'Ph' arg; do
+while getopts 'PDh' arg; do
 	case "${arg}" in
 		P) ini_file=production.ini ;;
+		D) ini_file=test.ini ;;
 		h) _usage 0 ;;
 		*)
 			echo "Invalid argument ${arg}"
@@ -26,4 +29,4 @@ while getopts 'Ph' arg; do
 done
 
 systemctl stop bigwebsite
-~/bws.env/bin/initialize_bigwebsite_db /usr/local/bigwebsite/development.ini
+~/bws.env/bin/initialize_bigwebsite_db /usr/local/bigwebsite/$ini_file

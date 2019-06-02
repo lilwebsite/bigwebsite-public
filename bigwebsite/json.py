@@ -1,6 +1,5 @@
 from bigwebsite.web.art import art_api as art
 from bigwebsite.web.video import video
-from bigwebsite.include.debug import *
 from bigwebsite.data.switch import switch as sw
 
 class view_json:

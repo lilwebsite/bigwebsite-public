@@ -1,5 +1,4 @@
 from bigwebsite.include.video import *
-from bigwebsite.include.debug import *
 
 class video_elements:
 	def __init__(self, dbinfo, settings):
@@ -91,7 +90,7 @@ class video:
 					thumbname = self.format_name('{date}video-thumbnail{num}.jpeg')
 					border = self.format_fullpath(bordername)
 					thumb = self.format_fullpath(thumbname)
-
+					
 					shutil.copyfileobj(
 						self.request.POST['border'].file,
 						open(border, 'wb')
@@ -128,7 +127,7 @@ class video:
 		return Response('<p style="color: red">unknown failure. contact admin</p>')
 
 	def remove(self):
-		vidnum = re.search('videodel(\d+)', self.request.POST['video-submit']).group(1)
+		vidnum = re.search(r'videodel(\d+)', self.request.POST['video-submit']).group(1)
 		dbentry = self.request.dbsession.query(Video).filter(Video.id==vidnum)
 		if not dbentry.one():
 			return self.resp_status.error(0)

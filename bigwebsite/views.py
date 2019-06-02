@@ -11,7 +11,6 @@ from bigwebsite.security import user_security
 from bigwebsite.web.video import video
 from bigwebsite.web.art import art_api as art
 from bigwebsite.manipulate.bandcamp import formulate_embeds as bandcamp_embeds
-from bigwebsite.include.debug import *
 
 #alias for list()
 def aliasl(l):

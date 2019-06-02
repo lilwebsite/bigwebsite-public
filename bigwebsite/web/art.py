@@ -1,5 +1,4 @@
 from bigwebsite.include.art import *
-from bigwebsite.include.debug import *
 
 class art_elements:
 	def __init__(self, art, settings):
@@ -184,7 +183,7 @@ class art_api:
 			path, #src
 			self.artpath #dst
 		) is not None:
-			self.add_clean(artfp)
+			self.add_clean(self.artpath)
 			return self.resp_status.error(8)
 		return None
 
@@ -301,10 +300,10 @@ class art_api:
 			return self.resp_status.error()
 		if self.request.POST['art-submit'] != 'artimg':
 			return self.resp_status.error(10)
-		if self.request.POST['art'] is None or self.request.POST['filename'] is None:
+		if self.request.POST['art'] is None:
 			return self.resp_status.error(10)
 
-		filetype = re.search(self.filetypes, self.request.POST['filename'], re.IGNORECASE) 
+		filetype = re.search(self.filetypes, self.request.POST['art'].filename, re.IGNORECASE) 
 		if filetype is None:
 			return self.resp_status.error(2)
 		filetype = filetype.group(1).lower()

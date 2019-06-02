@@ -16,4 +16,11 @@ function fix
 	done
 }
 
-fix $1
+if [ $PWD = '/' -a ! $1 ]
+then
+	exit 1
+fi
+
+fix $PWD/$1
+
+exit 0

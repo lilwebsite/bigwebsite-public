@@ -100,29 +100,22 @@ $('#formartadd').on('submit', function(event){
 	event.preventDefault();
 	artadd = new FormData($(this)[0]);
 	artadd.append('art-submit', 'artimg');
-	regex = /[.](jpeg|jpg|png|gif|bmp|webp|pdf)/gi;
 	file = $(this)[0][0];
 	if(file != undefined){
-		result = regex.exec(file.files[0].name);
-		if(result != undefined){
-			artadd.append('filename', result[0]);
-			$('#artadd-result').html(loading);
-			$.ajax({
-				type: 'POST',
-				url: window.location.href,
-				data: artadd,
-				cache: false,
-				processData: false,
-				contentType: false
-			}).done(function(response){
-				$('#artadd-result').html(response);
-				refreshArt();
-			}).always(function(response){
-				handleResponse(response);
-			});
-		} else {
-			$('#artadd-result').html('<p stle="color: red">invalid file format</p>');
-		}
+		$('#artadd-result').html(loading);
+		$.ajax({
+			type: 'POST',
+			url: window.location.href,
+			data: artadd,
+			cache: false,
+			processData: false,
+			contentType: false
+		}).done(function(response){
+			$('#artadd-result').html(response);
+			refreshArt();
+		}).always(function(response){
+			handleResponse(response);
+		});
 	}
 });
 

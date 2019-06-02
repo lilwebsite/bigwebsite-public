@@ -1,5 +1,4 @@
 from bigwebsite.include.manipulate.video import *
-from bigwebsite.include.debug import *
 
 def genthumbnail(border, thumb, ytsrc, settings):
 	colors = 128
